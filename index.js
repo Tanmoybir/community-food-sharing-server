@@ -9,11 +9,6 @@ const port = process.env.PORT || 5000
 app.use(cors())
 app.use(express.json())
 
-// community-food 
-// bcFamdAEa7lTN8g1
-
-
-
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.xmlybhe.mongodb.net/?retryWrites=true&w=majority`;
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
@@ -29,6 +24,17 @@ async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
+    
+    const foodCollection = client.db('foodDB').collection('foods')
+
+    app.get('/api/v1/foods', async(req,res) => {
+        const cursor = foodCollection.find()
+        const result = await cursor.toArray()
+        res.send(result)
+    })
+
+   
+
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
